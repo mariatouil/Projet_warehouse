@@ -1,0 +1,73 @@
+Table Flight_Fact {
+  Flight_ID int [pk]  // Identifiant unique du vol
+  Type_id   int 
+  Weather_ID int
+  // Clés étrangères vers les dimensions
+  Dep_Airport_ID int  // Référence à l'aéroport de départ
+  Arr_Airport_ID int  // Référence à l'aéroport d'arrivé
+  Airline_ID int  // Référence à la compagnie aérienne
+  Aircraft_ID int // Référence à l'avion utilisé
+  FlightDate Date
+  Dep_Delay Integer // Retard de départ en minutes
+  Arr_Delay Integer // Retard d'arrivée en minutes
+  Flight_Duration Integer // Durée du vol en minutes
+  Cancelled bool // Jour de la semaine
+  Diverted bool
+  
+}
+// Table des dimensions de date (Date Dimension)
+Table Date_Dimension {
+  Date Date [pk]  // Date unique
+  Day_Of_Week Varchar // Jour de la semaine
+  Weekday int // Si c'est un jour de semaine (TRUE ou FALSE)
+}
+
+Table Delay_Dimension {
+  Type_id  int  // Date unique
+  Delay_range  varchar
+  Delay_cause  varchar
+}
+
+// Table des dimensions des aéroports (Airport Dimension)
+Table Airport_Dimension {
+  Airport_ID int [pk] // Identifiant unique de l'aéroport
+  Airport_Name Varchar // Nom de l'aéroport
+  CityName Varchar // Nom de la ville
+  state Varchar // Code du pays
+  Country Varchar // Nom du pays
+  longitude float // 
+  latitude float
+}
+
+// Table des dimensions des compagnies aériennes (Airline Dimension)
+Table Airline_Dimension {
+  Airline_ID Varchar [pk] // Identifiant unique de la compagnie aérienne
+  Airline_Name Varchar // Nom de la compagnie aérienne
+}
+
+// Table des dimensions des avions (Aircraft Dimension)
+Table Aircraft_Dimension {
+  Aircraft_ID Varchar [pk] // Identifiant unique de l'avion
+  Model Varchar // Modèle de l'avion
+  Aircraft_age Integer // Âge de l'avion en années
+}
+
+// Table des dimensions météorologiques (Weather Dimension)
+Table Weather_Dimension {
+  Weather_ID int [pk] // Identifiant unique des conditions météorologiques
+  time Time // Heure de la météo
+  tavg Float // Température moyenne
+  tmin Float // Température minimale
+  tmax Float // Température maximale
+  snow Float // Neige (mm)
+
+}
+
+// Relations
+Ref: Flight_Fact.FlightDate > Date_Dimension.Date
+Ref: Flight_Fact.Dep_Airport_ID > Airport_Dimension.Airport_ID
+Ref: Flight_Fact.Arr_Airport_ID > Airport_Dimension.Airport_ID
+Ref: Flight_Fact.Airline_ID > Airline_Dimension.Airline_ID
+Ref: Flight_Fact.Aircraft_ID > Aircraft_Dimension.Aircraft_ID
+Ref: Flight_Fact.Weather_ID > Weather_Dimension. Weather_ID
+Ref: Flight_Fact.Type_id > Delay_Dimension.Type_id
